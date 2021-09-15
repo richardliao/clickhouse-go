@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql/driver"
 	"fmt"
-	"math"
 	"reflect"
 	"regexp"
 	"strings"
