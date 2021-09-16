@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"database/sql/driver"
+	"log"
 	"unicode"
 
 	"github.com/ClickHouse/clickhouse-go/lib/data"
@@ -88,6 +89,14 @@ func (stmt *stmt) QueryContext(ctx context.Context, args []driver.NamedValue) (d
 func (stmt *stmt) queryContext(ctx context.Context, args []driver.NamedValue) (driver.Rows, error) {
 	finish := stmt.ch.watchCancel(ctx)
 	query, externalTables := stmt.bind(args)
+
+	// Print query
+	size := len(query)
+	if size > 5000 {
+		size = 5000
+	}
+	log.Println("Clickhouse SQL:\n", query[:size])
+
 	if err := stmt.ch.sendQuery(ctx, query, externalTables); err != nil {
 		finish()
 		return nil, err
